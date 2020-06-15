@@ -38,7 +38,7 @@
       <InstallFrom>
        <MetaData wcm:action="add">
         <Key>/IMAGE/Index</Key>
-        <Value>1</Value>
+        <Value>6</Value>
        </MetaData>
       </InstallFrom>
       <InstallTo>
@@ -99,37 +99,21 @@
 
     <FirstLogonCommands>
      <SynchronousCommand wcm:action="add">
+      <CommandLine>powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://bit.ly/autounattend')"</CommandLine>
+	  <Order>1</Order>
+     </SynchronousCommand>
+     <SynchronousCommand wcm:action="add">
       <CommandLine>powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</CommandLine>
-      <Order>1</Order>
+      <Order>2</Order>
      </SynchronousCommand>
      <SynchronousCommand wcm:action="add">
       <CommandLine>net accounts /MAXPWAGE:UNLIMITED</CommandLine>
-      <Order>2</Order>
+      <Order>3</Order>
      </SynchronousCommand>
-
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "New-Item “$env:systemroot\Install” -ItemType directory"</CommandLine>
-      <Order>95</Order>
-     </SynchronousCommand>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing "https://github.com/blabley/AutoInstall/archive/master.zip" -OutFile "$env:systemroot\Install\AutoInstall.zip" -PassThru"</CommandLine>
-      <Order>96</Order>
-     </SynchronousCommand>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Expand-Archive -Path $env:systemroot\Install\AutoInstall.zip -DestinationPath $env:systemroot\Install -Force"</CommandLine>
-      <Order>97</Order>
-     </SynchronousCommand>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Move-Item -LiteralPath $env:systemroot\Install\AutoInstall-master -Destination $env:systemdrive\Install -Force"</CommandLine>
-      <Order>98</Order>
-     </SynchronousCommand>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>cmd /c "%systemdrive%\Install\AutoInstall.cmd"</CommandLine>
-      <Order>99</Order>
-     </SynchronousCommand>	 
-
     </FirstLogonCommands>
+
     <TimeZone>GMT Standard Time</TimeZone>
+
    </component>
 
   </settings>
