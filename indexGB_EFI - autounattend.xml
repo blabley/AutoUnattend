@@ -1,153 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
-
-  <settings pass="windowsPE">
-
-   <component name="Microsoft-Windows-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
-    <UserData>
-     <AcceptEula>true</AcceptEula>
-     <!-- The following section only needed for Vista installs -->
-     <ProductKey>
-       <WillShowUI>Never</WillShowUI>
-       <!-- Vista's 'default' product key. Gets overriden using slmgr.vbs. -->
-       <Key/>
-     </ProductKey>
-    </UserData>
-
-    <DiskConfiguration>
-     <WillShowUI>OnError</WillShowUI>
-     <Disk>
-      <DiskID>0</DiskID>
-      <WillWipeDisk>true</WillWipeDisk>
-      <CreatePartitions>
-       <CreatePartition>
-        <Order>1</Order>
-        <Type>EFI</Type>
-        <Size>200</Size>
-       </CreatePartition>
-       <CreatePartition>
-        <Order>2</Order>
-        <Type>MSR</Type>
-        <Size>128</Size>
-       </CreatePartition>
-       <CreatePartition>
-        <Order>3</Order>
-        <Type>Primary</Type>
-        <Extend>true</Extend>
-       </CreatePartition>
-      </CreatePartitions>
-     </Disk>
-    </DiskConfiguration>
-
-    <ComplianceCheck>
-     <DisplayReport>OnError</DisplayReport>
-    </ComplianceCheck>
-
-    <ImageInstall>
-     <OSImage>
-      <InstallFrom>
-       <MetaData wcm:action="add">
-        <Key>/IMAGE/Index</Key>
-        <Value>6</Value>
-       </MetaData>
-      </InstallFrom>
-      <InstallTo>
-       <DiskID>0</DiskID>
-       <PartitionID>3</PartitionID>
-      </InstallTo>
-      <WillShowUI>OnError</WillShowUI>
-      <InstallToAvailablePartition>false</InstallToAvailablePartition>
-     </OSImage>
-    </ImageInstall>
-   </component>
-
-   <component name="Microsoft-Windows-International-Core-WinPE" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
-    <InputLocale>en-GB</InputLocale>
-    <SystemLocale>en-GB</SystemLocale>
-    <UILanguage>en-GB</UILanguage>
-    <UserLocale>en-GB</UserLocale>
-   </component>
-
-  </settings>
-
-  <settings pass="oobeSystem">
-
-   <component name="Microsoft-Windows-Shell-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
-    <AutoLogon>
-     <Password>
-      <Value/> 
-      <PlainText>true</PlainText>
-     </Password>
-     <Enabled>true</Enabled> 
-     <Username>User</Username> 
-    </AutoLogon>
-
-    <UserAccounts>
-     <LocalAccounts>
-      <LocalAccount wcm:action="add">
-       <Password>
-        <Value/>
-        <PlainText>true</PlainText>
-       </Password>
-       <Group>administrators;users</Group>
-       <Name>User</Name>
-      </LocalAccount>
-     </LocalAccounts>
-    </UserAccounts>
-
-    <OOBE>
-     <HideEULAPage>true</HideEULAPage>
-     <ProtectYourPC>3</ProtectYourPC>
-     <SkipMachineOOBE>true</SkipMachineOOBE>
-     <SkipUserOOBE>true</SkipUserOOBE>
-     <NetworkLocation>Other</NetworkLocation>
-	 <HideLocalAccountScreen>true</HideLocalAccountScreen>
-	 <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
-	 <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
-	 <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
-    </OOBE>
-
-    <FirstLogonCommands>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://bit.ly/autounattend')"</CommandLine>
-	  <Order>1</Order>
-     </SynchronousCommand>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</CommandLine>
-      <Order>2</Order>
-     </SynchronousCommand>
-     <SynchronousCommand wcm:action="add">
-      <CommandLine>net accounts /MAXPWAGE:UNLIMITED</CommandLine>
-      <Order>3</Order>
-     </SynchronousCommand>
-    </FirstLogonCommands>
-
-    <TimeZone>GMT Standard Time</TimeZone>
-
-   </component>
-
-  </settings>
-
-  <settings pass="specialize">
-   <component name="Microsoft-Windows-Security-Licensing-SLC-UX" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
-    <SkipAutoActivation>true</SkipAutoActivation>
-   </component>
-   <component name="Microsoft-Windows-Deployment" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
-    <RunSynchronous>
-     <RunSynchronousCommand wcm:action="add">
-      <Order>1</Order>
-      <Path>cmd /c FOR %i IN (A B C D E F G H I J K L N M O P Q R S T U V W X Y Z) DO IF EXIST %i:\Autounattend.xml SETX InstallDrive %i: -m</Path>
-     </RunSynchronousCommand>
-     <RunSynchronousCommand wcm:action="add">
-      <Order>2</Order>
-      <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\FirstNetwork" /v Category /t REG_DWORD /d 00000000 /f</Path>
-     </RunSynchronousCommand>
-     <RunSynchronousCommand wcm:action="add">
-      <Order>3</Order>
-      <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge" /v PreventFirstRunPage /t REG_DWORD /d 00000001 /f</Path>
-     </RunSynchronousCommand>
-	 </RunSynchronous>
-   </component>
-  </settings>
-
+<unattend xmlns="urn:schemas-microsoft-com:unattend"
+          xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+	<settings pass="windowsPE">
+		<component name="Microsoft-Windows-Setup"
+		           publicKeyToken="31bf3856ad364e35"
+		           language="neutral"
+		           versionScope="nonSxS"
+		           processorArchitecture="amd64">
+			<UserData>
+				<AcceptEula>true</AcceptEula>
+				<!-- The following section only needed for Vista installs -->
+				<ProductKey>
+					<WillShowUI>Never</WillShowUI>
+					<!-- Vista's 'default' product key. Gets overriden using slmgr.vbs. -->
+					<Key/>
+				</ProductKey>
+			</UserData>
+			<DiskConfiguration>
+				<Disk wcm:action="add">
+					<DiskID>0</DiskID>
+					<WillWipeDisk>true</WillWipeDisk>
+					<CreatePartitions>
+						<!-- Windows RE Tools partition -->
+						<CreatePartition wcm:action="add">
+							<Order>1</Order>
+							<Type>Primary</Type>
+							<Size>300</Size>
+						</CreatePartition>
+						<!-- System partition (ESP) -->
+						<CreatePartition wcm:action="add">
+							<Order>2</Order>
+							<Type>EFI</Type>
+							<Size>100</Size>
+						</CreatePartition>
+						<!-- Microsoft reserved partition (MSR) -->
+						<CreatePartition wcm:action="add">
+							<Order>3</Order>
+							<Type>MSR</Type>
+							<Size>128</Size>
+						</CreatePartition>
+						<!-- Windows partition -->
+						<CreatePartition wcm:action="add">
+							<Order>4</Order>
+							<Type>Primary</Type>
+							<Extend>true</Extend>
+						</CreatePartition>
+					</CreatePartitions>
+					<ModifyPartitions>
+						<!-- Windows RE Tools partition -->
+						<ModifyPartition wcm:action="add">
+							<Order>1</Order>
+							<PartitionID>1</PartitionID>
+							<Label>WINRE</Label>
+							<Format>NTFS</Format>
+							<TypeID>DE94BBA4-06D1-4D40-A16A-BFD50179D6AC</TypeID>
+						</ModifyPartition>
+						<!-- System partition (ESP) -->
+						<ModifyPartition wcm:action="add">
+							<Order>2</Order>
+							<PartitionID>2</PartitionID>
+							<Label>System</Label>
+							<Format>FAT32</Format>
+						</ModifyPartition>
+						<!-- MSR partition does not need to be modified -->
+						<ModifyPartition wcm:action="add">
+							<Order>3</Order>
+							<PartitionID>3</PartitionID>
+						</ModifyPartition>
+						<!-- Windows partition -->
+						<ModifyPartition wcm:action="add">
+							<Order>4</Order>
+							<PartitionID>4</PartitionID>
+							<Letter>C</Letter>
+							<Format>NTFS</Format>
+						</ModifyPartition>
+					</ModifyPartitions>
+				</Disk>
+			</DiskConfiguration>
+			<ComplianceCheck>
+				<DisplayReport>OnError</DisplayReport>
+			</ComplianceCheck>
+			<ImageInstall>
+				<OSImage>
+					<InstallFrom>
+						<MetaData wcm:action="add">
+							<Key>/IMAGE/Index</Key>
+							<Value>6</Value>
+						</MetaData>
+					</InstallFrom>
+					<InstallTo>
+						<DiskID>0</DiskID>
+						<PartitionID>4</PartitionID>
+					</InstallTo>
+					<WillShowUI>OnError</WillShowUI>
+					<InstallToAvailablePartition>false</InstallToAvailablePartition>
+				</OSImage>
+			</ImageInstall>
+		</component>
+		<component name="Microsoft-Windows-International-Core-WinPE"
+		           publicKeyToken="31bf3856ad364e35"
+		           language="neutral"
+		           versionScope="nonSxS"
+		           processorArchitecture="amd64">
+			<InputLocale>en-GB</InputLocale>
+			<SystemLocale>en-GB</SystemLocale>
+			<UILanguage>en-GB</UILanguage>
+			<UserLocale>en-GB</UserLocale>
+		</component>
+	</settings>
+	<settings pass="oobeSystem">
+		<component name="Microsoft-Windows-Shell-Setup"
+		           publicKeyToken="31bf3856ad364e35"
+		           language="neutral"
+		           versionScope="nonSxS"
+		           processorArchitecture="amd64">
+			<AutoLogon>
+				<Password>
+					<Value/>
+					<PlainText>true</PlainText>
+				</Password>
+				<Enabled>true</Enabled>
+				<Username>User</Username>
+			</AutoLogon>
+			<UserAccounts>
+				<LocalAccounts>
+					<LocalAccount wcm:action="add">
+						<Password>
+							<Value/>
+							<PlainText>true</PlainText>
+						</Password>
+						<Group>administrators;users</Group>
+						<Name>User</Name>
+					</LocalAccount>
+				</LocalAccounts>
+			</UserAccounts>
+			<OOBE>
+				<HideEULAPage>true</HideEULAPage>
+				<ProtectYourPC>3</ProtectYourPC>
+				<SkipMachineOOBE>true</SkipMachineOOBE>
+				<SkipUserOOBE>true</SkipUserOOBE>
+				<NetworkLocation>Other</NetworkLocation>
+				<HideLocalAccountScreen>true</HideLocalAccountScreen>
+				<HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+				<HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+				<HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+			</OOBE>
+			<FirstLogonCommands>
+				<SynchronousCommand wcm:action="add">
+					<CommandLine>powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://bit.ly/autounattend')"</CommandLine>
+					<Order>1</Order>
+				</SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<CommandLine>powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</CommandLine>
+					<Order>2</Order>
+				</SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<CommandLine>net accounts /MAXPWAGE:UNLIMITED</CommandLine>
+					<Order>3</Order>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+			<TimeZone>GMT Standard Time</TimeZone>
+		</component>
+	</settings>
+	<settings pass="specialize">
+		<component name="Microsoft-Windows-Security-Licensing-SLC-UX"
+		           publicKeyToken="31bf3856ad364e35"
+		           language="neutral"
+		           versionScope="nonSxS"
+		           processorArchitecture="amd64">
+			<SkipAutoActivation>true</SkipAutoActivation>
+		</component>
+		<component name="Microsoft-Windows-Deployment"
+		           publicKeyToken="31bf3856ad364e35"
+		           language="neutral"
+		           versionScope="nonSxS"
+		           processorArchitecture="amd64">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>cmd /c FOR %i IN (A B C D E F G H I J K L N M O P Q R S T U V W X Y Z) DO IF EXIST %i:\Autounattend.xml SETX InstallDrive %i: -m</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\FirstNetwork" /v Category /t REG_DWORD /d 00000000 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge" /v PreventFirstRunPage /t REG_DWORD /d 00000001 /f</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
 </unattend>
